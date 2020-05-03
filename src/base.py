@@ -4,6 +4,7 @@ import collections
 
 import torch
 
+from . import io
 from . import convert
 
 
@@ -14,7 +15,9 @@ class ModuleConfig:
 
 
 class Encoder(torch.nn.Module):
-    def __init__(self, config: list, block_type, pool_type, input_type, in_channels=3, **kwargs):
+    def __init__(
+        self, config: list, block_type, pool_type, input_type, in_channels=3, **kwargs
+    ):
         super(Encoder, self).__init__()
 
         blocks = self.make_blocks(config, block_type, pool_type, in_channels)
@@ -24,7 +27,8 @@ class Encoder(torch.nn.Module):
         self.features = torch.nn.Sequential(collections.OrderedDict(blocks))
 
     def load_pretrained(self, model: str, hexdigest: str):
-        self.load_state_dict(torch.load(f"models/{model}.pkl"), strict=False)
+        fullpath = io.download_to_file(model, hexdigest)
+        self.load_state_dict(torch.load(fullpath), strict=False)
 
     def make_blocks(self, config, block_type, pool_type, in_channels):
         previous = in_channels
@@ -39,10 +43,10 @@ class Encoder(torch.nn.Module):
         if len(layers) == 0:
             raise ValueError("Expecting list of output layers, e.g. ['1_1', '2_1'].")
 
-        names = ["0_0"] + list(self.features._modules.keys())
+        names = list(self.features._modules.keys())
         indices = [names.index(l) for l in layers]
 
-        for i in range(names.index(start) + 1, max(indices) + 1):
-            image = self.features[i - 1].forward(image)
+        for i in range(names.index(start), max(indices) + 1):
+            image = self.features[i].forward(image)
             if i in indices:
                 yield names[i], image
