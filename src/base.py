@@ -12,23 +12,27 @@ class ModuleConfig:
 
 
 class Encoder(torch.nn.Module):
-    def __init__(self, blocks, **kwargs):
+    def __init__(self, config: list, block_type, pool_type, input_type, in_channels=3, **kwargs):
         super(Encoder, self).__init__()
 
+        blocks = self.make_blocks(config, block_type, pool_type, in_channels)
         self.features = torch.nn.Sequential(collections.OrderedDict(blocks))
 
-    def make_blocks(self, config, block_type):
-        previous = 3
+    def load_pretrained(self, model: str, hexdigest: str):
+        self.load_state_dict(torch.load(f"models/{model}.pkl"), strict=False)
+
+    def make_blocks(self, config, block_type, pool_type, in_channels):
+        previous = in_channels
         for octave, module in enumerate(config):
             for block in range(module.blocks):
                 yield f"{octave+1}_{block+1}", block_type(previous, module.filters)
                 if block == module.blocks - 1:
-                    yield f"{octave+1}_p", torch.nn.MaxPool2d(kernel_size=(2, 2))
+                    yield f"{octave+2}_0", pool_type(kernel_size=(2, 2))
                 previous = module.filters
 
     def extract(self, image, layers: list, start="0_0"):
         if len(layers) == 0:
-            raise ValueError("Expecting output layers, e.g. ['1_1', '2_1'].")
+            raise ValueError("Expecting list of output layers, e.g. ['1_1', '2_1'].")
 
         names = ["0_0"] + list(self.features._modules.keys())
         indices = [names.index(l) for l in layers]
