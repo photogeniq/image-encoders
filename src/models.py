@@ -2,7 +2,7 @@
 
 from torch import nn
 
-from base import Encoder, ModuleConfig as M
+from .base import Encoder, ModuleConfig as M
 
 
 def ConvBlock(in_channels, out_channels, activation="ReLU"):
