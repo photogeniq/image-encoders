@@ -4,6 +4,8 @@ import collections
 
 import torch
 
+from . import convert
+
 
 class ModuleConfig:
     def __init__(self, f, b):
@@ -16,6 +18,9 @@ class Encoder(torch.nn.Module):
         super(Encoder, self).__init__()
 
         blocks = self.make_blocks(config, block_type, pool_type, in_channels)
+        if input_type == "RGB":
+            blocks = [("0_0", convert.NormalizeRGB())] + list(blocks)
+
         self.features = torch.nn.Sequential(collections.OrderedDict(blocks))
 
     def load_pretrained(self, model: str, hexdigest: str):
