@@ -3,7 +3,7 @@
 import torch
 import pytest
 
-from models import VGG19, VGG16, VGG13, VGG11, ThinetSmall, ThinetTiny
+from encoders.models import *
 
 
 ALL_MODELS = [VGG19, VGG16, VGG13, VGG11, ThinetSmall, ThinetTiny]
