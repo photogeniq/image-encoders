@@ -16,15 +16,18 @@ class ModuleConfig:
 
 class Encoder(torch.nn.Module):
     def __init__(
-        self, config: list, block_type, pool_type, input_type, in_channels=3, **kwargs
+        self, block_type, pool_type, input_type, in_channels=3, pretrained=True
     ):
         super(Encoder, self).__init__()
 
-        blocks = self.make_blocks(config, block_type, pool_type, in_channels)
+        blocks = self.make_blocks(self.CONFIG, block_type, pool_type, in_channels)
         if input_type == "RGB":
             blocks = [("0_0", convert.NormalizeRGB())] + list(blocks)
 
         self.features = torch.nn.Sequential(collections.OrderedDict(blocks))
+
+        if pretrained is True:
+            self.load_pretrained(self.FILENAME, self.HEXDIGEST)
 
     def load_pretrained(self, model: str, hexdigest: str):
         fullpath = io.download_to_file(model, hexdigest)
