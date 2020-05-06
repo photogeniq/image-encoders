@@ -72,3 +72,7 @@ class ThinetTiny(Encoder):
         super(ThinetTiny, self).__init__(
             block_type, pool_type, input_type="RGB", **kwargs
         )
+
+
+ALL_MODELS = [VGG19, VGG16, VGG13, VGG11, ThinetSmall, ThinetTiny]
+ALL_LAYERS = ["1_1", "2_1", "3_1", "4_1", "5_1"]
