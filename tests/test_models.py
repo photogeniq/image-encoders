@@ -17,12 +17,12 @@ class TestLifeCycle:
         model.train()
         model.eval()
 
-    def test_to_device(self, device, model_class):
+    def test_to_device(self, model_class, device):
         model = model_class(pretrained=False).to(device)
         del model
 
     @pytest.mark.cuda
-    def test_half_precision(self, device, model_class):
+    def test_half_precision(self, model_class, device):
         model = model_class(pretrained=False).to(device).half()
         del model
 

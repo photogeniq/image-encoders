@@ -18,6 +18,11 @@ def device(request):
     return request.config.getoption("--device")
 
 
+@pytest.fixture
+def model(model_class, device):
+    return model_class(pretrained=False).to(device)
+
+
 def pytest_collection_modifyitems(config, items):
     if config.getoption("--device") == "cuda":
         return
