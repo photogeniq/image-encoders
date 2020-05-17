@@ -13,11 +13,11 @@ DATA_CHUNK = 8192
 
 
 def download_to_file(model, hexdigest):
-    filename = f"{DATA_DIR}/{model}.pkl"
-    if os.path.exists(filename):
-        return filename
+    fullpath = f"{DATA_DIR}/{model}.pkl"
+    if os.path.exists(fullpath):
+        return fullpath
 
-    directory, filename = os.path.split(filename)
+    directory, filename = os.path.split(fullpath)
     os.makedirs(directory, exist_ok=True)
     response = urllib.request.urlopen(f"{DATA_URL}/{model}.pkl.bz2")
 
@@ -30,7 +30,7 @@ def download_to_file(model, hexdigest):
     ]
     bunzip, output, hasher = (
         bz2.BZ2Decompressor(),
-        open(filename, "wb"),
+        open(fullpath, "wb"),
         hashlib.new("md5"),
     )
 
@@ -46,4 +46,4 @@ def download_to_file(model, hexdigest):
     assert (
         hasher.hexdigest() == hexdigest
     ), "ERROR: `{model}` has unexpected MD5 checksum."
-    return filename
+    return fullpath
