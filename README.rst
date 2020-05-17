@@ -11,7 +11,7 @@ This repository contains a collection of deep encoders implemented in *PyTorch* 
 Pretrained Models
 -----------------
 
-The code automatically downloads pretrained models that have the following properties:
+The pretrained models are automatically downloaded and available under the Creative Commons `BY-NC-SA License <https://creativecommons.org/licenses/by-nc-sa/3.0/>`_.  They have the following properties:
 
 * Normalized activations with mean ``1.0``, based on the statistics of 50k samples from ImageNet's validation set. 
 
@@ -19,20 +19,16 @@ The code automatically downloads pretrained models that have the following prope
 
 These are the models currently available:
 
-.. table::
-    :width: 100%
-    :align: center
-
-    ============       ===========      ========
-    Model              Version          Size
-    ============       ===========      ========
-    VGG11              bbd30ac9         17Mb
-    VGG13              c768596a         18Mb
-    VGG16              397923af         28Mb
-    VGG19              dcbb9e9d         38Mb
-    ------------       -----------      --------
-    Thinet-Small       scratch-B        15Mb
-    Thinet-Tiny        scratch-B        2Mb
-    ============       ===========      ========
+============       ===========      ========
+Model              Version          Size
+============       ===========      ========
+VGG11              bbd30ac9         17Mb
+VGG13              c768596a         18Mb
+VGG16              397923af         28Mb
+VGG19              dcbb9e9d         38Mb
+------------       -----------      --------
+Thinet-Small       scratch-B        15Mb
+Thinet-Tiny        scratch-B        2Mb
+============       ===========      ========
 
 The VGG family of networks are based on versions from the `official torchvision library <https://github.com/pytorch/vision>`_, and the Thinet family is based on the `Rethinking Network Pruning <https://github.com/Eric-mingjie/rethinking-network-pruning/tree/master/imagenet/thinet>`_ repository.
