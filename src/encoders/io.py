@@ -1,7 +1,9 @@
 # image-encoders — Copyright (c) 2020, Novelty Factory KG.  See LICENSE for details.
 
 import os
+import bz2
 import urllib
+import hashlib
 import progressbar
 
 
@@ -15,7 +17,7 @@ def download_to_file(model, hexdigest):
     if os.path.exists(filename):
         return filename
 
-    directory = os.path.dirname(filename)
+    directory, filename = os.path.split(filename)
     os.makedirs(directory, exist_ok=True)
     response = urllib.request.urlopen(f"{DATA_URL}/{model}.pkl.bz2")
 
@@ -28,7 +30,7 @@ def download_to_file(model, hexdigest):
     ]
     bunzip, output, hasher = (
         bz2.BZ2Decompressor(),
-        open(f"{directory}/{model}.pkl", "wb"),
+        open(filename, "wb"),
         hashlib.new("md5"),
     )
 
@@ -41,5 +43,7 @@ def download_to_file(model, hexdigest):
             hasher.update(data)
             output.write(data)
 
-    assert hasher.hexdigest() == hexdigest, "ERROR: `{model}` has unexpected MD5 checksum."
+    assert (
+        hasher.hexdigest() == hexdigest
+    ), "ERROR: `{model}` has unexpected MD5 checksum."
     return filename
