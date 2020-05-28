@@ -1,5 +1,6 @@
 # image-encoders — Copyright (c) 2020, Novelty Factory KG.  See LICENSE for details.
 
+import itertools
 import functools
 import collections
 
@@ -58,7 +59,11 @@ class Encoder(torch.nn.Module):
             yield cur, functools.partial(self.extract_one, layer=cur, start=prev)
 
     def extract(self, img, layers, start="0_0", as_checkpoints=False):
-        for layer, func in self._get_extractors(layers, start):
+        def convert(l):
+            return (l,) if isinstance(l, str) else l
+        layers = list(set(itertools.chain.from_iterable(convert(l) for l in layers)))
+
+        for layer, func in self._get_extractors(sorted(layers), start):
             if as_checkpoints is True:
                 img = tcp.checkpoint(func, img)
             else:
